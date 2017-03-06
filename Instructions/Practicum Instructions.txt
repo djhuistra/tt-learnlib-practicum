@@ -19,3 +19,24 @@ Sidenote. In the learner class indicate if you have installed graphDOT, so it wi
 Next up. Include your Wolf-Goat-Cabbage implementation into the project (Including a jar file in eclipse: right click project name-> properties -> Java Build Path -> Add External JARs -> Select implementation jar). Now start to implement the SUL wrapper. 
 
 We assume the same input and outputs as used in the lecture. So the inputs are one of the set ("cabbage?", "goat?", "nothing?", "wolf?") and each input should return a response that is contained in the set ("eaten!", "finished!", "init", "ok!", "retry!").
+
+Part 2. SUL Wrapping
+While it is pretty cool to be able to learn a model by interacting with an implementation, the succes of this method depends in practice will also be dependend on its performance. Is it still feasible to learn the model of a larger implementation in a reasonable amount of time? Increasing the performance of this method is currently an active area of research.
+
+In this part we want you to get some insight into one of the bottlenecks of the process: interaction with the SUL. Each interaction with the SUL is considered expensive, and therefore if possible we want to limit the amount of interaction.
+ 
+First we want to gain some insight into the interaction taking place in the learning process. Therefore we want to wrap our SUL in a SymbolCounterSUL that counts the number of total steps taken during the learning process, and then pass this SymbolCounterSUL to the membershipOracle. After the experiment, obtain the data using the getStatisticalData() method. Observe the output.
+
+https://github.com/LearnLib/learnlib/blob/develop/core/src/main/java/de/learnlib/oracles/SymbolCounterSUL.java
+
+Now we want to see if we can improve this. Learnlib offers a caching mechanism for SULs that might just help. Read the documentation to see what the cache wrapper does:
+
+https://github.com/LearnLib/learnlib/blob/develop/filters/cache/src/main/java/de/learnlib/cache/sul/SULCache.java
+
+Since SULCache's constructor method is deprecated, we recommend that you use the createCache method from the SULCaches class to wrap your SUL with this caching mechanism. 
+
+https://github.com/LearnLib/learnlib/blob/develop/filters/cache/src/main/java/de/learnlib/cache/sul/SULCaches.java
+
+Think about whether you should wrap the SUL directly or whether you should wrap the SymbolCounterSUL. Hint: the SymbolCounterSUL counts every call of the step() method before it passes on the call to the SUL it wraps. If you cannot determine the correct order, you can always experiment to find out :)
+
+See if, after wrapping the SUL in a cache, you can notice a significant change in the number of executed steps.

@@ -1,0 +1,21 @@
+Learnlib Practicum.
+
+Preliminaries. Install stuff.
+- Optinal: Install Eclipse
+For this assingment we reccomended the use of Eclipse. You are however free to compile the code by commandline :)
+	
+- Optional: Install GraphViz
+Learlib provides the option to export the learned models to the GraphDOT format so that they can visualized by the GraphViz application. If you want to visualize the learned models (reccomended), you need to install GraphViz. This can be done from here: http://www.graphviz.org/Download..php. If you do not install GraphViz, you will see the models in the (textual) GraphDot format.
+
+Sidenote: For Windows users, please be aware that you will need to add GraphViz to your PATH variable (as explained on the download page, but easly looked over).
+
+Part 1. Learning a model of your Wolf-Goat-Cabbage implementation
+The assingment. We will start off this practicum by automatically learning a model of your Wolf-Goat-Cabbage implementation. We will provide you with some basic Learlib settings for this task. The only task you will need to perform is to write a wrapper for your implementation so that Learnlib will know how to interact with it.  This will be done by implementing Learnlibs SUL interface.
+
+Getting to work. Download the provided basic framework from GitHub. You can import this project into eclipse. Next to the basic framework for using Learnlib (the learner class and the (empty) SUL wrapper class), this also includes a .jar file with the entire Learlib project. (Including a jar file in eclipse: right click project name-> properties -> Java Build Path -> Add External JARs -> Select learnlib jar). Make sure that you can succesfully run the learner. It should return a model with only one state, as the wrapper has not yet been implemented.
+
+Sidenote. In the learner class indicate if you have installed graphDOT, so it will produce a graphical model.
+
+Next up. Include your Wolf-Goat-Cabbage implementation into the project (Including a jar file in eclipse: right click project name-> properties -> Java Build Path -> Add External JARs -> Select implementation jar). Now start to implement the SUL wrapper. 
+
+We assume the same input and outputs as used in the lecture. So the inputs are one of the set ("cabbage?", "goat?", "nothing?", "wolf?") and each input should return a response that is contained in the set ("eaten!", "finished!", "init", "ok!", "retry!").

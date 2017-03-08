@@ -27,7 +27,7 @@ public class Exerpiment_Main {
 
         try {
             // runControlledExperiment for detailed statistics, runSimpleExperiment for just the result
-            Experiment_Learner.runControlledExperiment(sul, Experiment_Learner.LearningMethod.LStar, Experiment_Learner.TestingMethod.RandomWalk, inputAlphabet);
+            Experiment_Learner.runControlledExperiment(sul, Experiment_Learner.LearningMethod.LStar, Experiment_Learner.TestingMethod.WMethod, inputAlphabet);
         } finally {
             if (sul instanceof AutoCloseable) {
                 try {

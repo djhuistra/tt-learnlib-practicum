@@ -142,7 +142,49 @@ For this part of the assignment you will experiment with different learning algo
 
 Download the code for this experiment setup from the GitHub repository. In order to run this experiment, you will also require an updated version of the learnlib jar. Look for the Learnlib-with-ETF-Updted.jar file in the lib folder, and include this (instead of the old jar) in your project. You should now be able to run the experiment using the Experiment\_Main class.
 
-In this setup, the experiment is given the learning algorithm and hypothesis testing method as parameters. These enum parameters can easily be changed between runs of the experiments. In this assignment it is your task to fiddle around with these to find the optimal combination. Perform this task for both the ExperimentSUL included in the experiment and your own WGCSSUL. 
+In this setup, the experiment is given the learning algorithm and hypothesis testing method as parameters. These enum parameters can easily be changed between runs of the experiments. In this assignment it is your task to fiddle around with these to find the optimal combination. Perform this task for both the ExperimentSUL included in the experiment and your own WGCFSUL. 
+
+\begin{itemize}
+     \item What is the fastest \emph{learning} algorithm? 
+     \item What is the fastest \emph{testing} algorithm? 
+     \item What is the minimum value for \texttt{maxDepth} in the \texttt{WMethodEQOracle}/\texttt{WpMethodEQOracle} that still gives you a correct final hypothesis?
+     \item How well does the \texttt{RandomWalkEQOracle} perform with different parameters?
+\end{itemize}
+
+\section*{Part 4. Model checking}
+In this section we will show how a learned automaton can be checked for correctness, through Linear Temporal Logic (LTL).
+\begin{enumerate}
+     \item     The LearnLib itself is not capable of model checking a learned automaton, therefore we are going to use LTSmin.
+               LTSmin requires a Mealy machine specified in \texttt{ETF} format. 
+               In addition to \texttt{.dot} files, you can also export \texttt{.etf}, by adding to \texttt{Experiment\_Learner.produceOutput()},
+               the following piece of code:
+               
+               \texttt{PrintWriter etfWriter = new PrintWriter(fileName + ".etf"); \\
+                       ETF.export(model, alphabet, etfWriter); \\
+                       etfWriter.close();}.
+     \item     The LTSmin binaries that have been made available on Blackboard (Assignments \textgreater{} Lab \textgreater{} LTSmin) are currently only available on Linux.
+               If you are not using Linux, the easiest way to get started is to download VirtualBox\footnote{\url{https://www.virtualbox.org/}}, and download a Linux virtual
+               machine from \url{http://www.osboxes.org/}. Installing VirtualBox guest additions is recommended for quickly moving files (such as \texttt{.etf}) between the host and the guest.
+               To do so, make sure to enable the bi-directional clip board (via \emph{Devices} in the top menu of the VM).
+     \item     To instantiate the state space of a learned automaton, open up a Linux terminal, run \texttt{./etf2lts-seq learnedModel.etf}.
+               This should show \texttt{state space 8 levels, 9 states 36 transitions}.
+     \item     To model check an automaton add the \texttt{--ltl} option, e.g. to check the requirement ``\emph{The game can only be finished while moving the goat}'', run
+               \texttt{./etf2lts-seq learnedModel.etf --ltl='[](output == "finished!" -> input == "goat?")'}.
+     \item     To verify that no counter example has been found run \texttt{echo \$?}, this returns the exit code of the last command line; \texttt{0} means
+               no counter example, \texttt{1} means a counter example has been found.
+     \item     To show a counter example you can for example run \texttt{./etf2lts-seq learnedModel.etf --ltl='[](output == "finished!" -> input == "nothing?")'}
+               (the game can only be finished while moving nothing). The commandline \texttt{echo \$?} should show \texttt{1}. To write the counter example
+               to disk, add the option \texttt{--trace="/tmp/trace.gcf"}, 
+               e.g. \texttt{./etf2lts-seq learnedModel.etf --ltl='[](output == "finished!" -> input == "nothing?")' \\ --trace=/tmp/trace.gcf}.
+               To print the counter example, run \texttt{./ltsmin-printtrace /tmp/trace.gcf}. Aside from some verbose output, you should be able to recognize the
+               inputs and outputs in the trace. As a last remark note that LTSmin will always try to find infinite traces. This is shown in the trace as a self loop, in the
+               very last transition.
+     \item     If you want to write your own LTL formula, note that you should encapsulate the formula in single quotes. Strings (such as "eaten!") should have double quotes.
+               The Future and Globally operator are written as \texttt{<>} and \texttt{[]} respectively, and the implication as \texttt{->}.
+               For more LTL operators please refer to \url{http://jmeijer.nl/ltsmin/assets/man/ltsmin-ltl.html}.
+     \item     Can you spot (or prove) errors (or their absence) in WGCF implementations of other students, using active learning and model checking? The student mutants can be found on Blackboard
+               (assignments \textgreater{} Lab \textgreater{} student mutants).
+\end{enumerate}
 
 \end{document}
 

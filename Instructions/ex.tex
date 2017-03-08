@@ -112,7 +112,9 @@ The Learnlib provides the option to export the learned models to the GraphDOT fo
 
 \emph{Sidenote. In the learner class indicate if you have installed graphDOT, so it will produce a graphical model.}
 
-\textbf{Next up}. Include your Wolf-Goat-Cabbage implementation into the project (Including a jar file in eclipse: right click project name-\textgreater properties  -\textgreater Java Build Path  -\textgreater  Add External JARs  -\textgreater  Select implementation jar). Note that in this lab we will not be using the binary encoding of inputs and outputs. Now start to implement the SUL wrapper.
+\textbf{Next up}. Include your Wolf-Goat-Cabbage implementation into the project (Including a jar file in eclipse: right click project name-\textgreater properties  -\textgreater Java Build Path  -\textgreater  Add External JARs  -\textgreater  Select implementation jar). Note that in this lab we will not be using the binary encoding of inputs and outputs. 
+
+Now you may start with implementing the SUL wrapper. We advice you to use the WGC implementation as a library jar, not as a runnable jar. So you can import ans use the implemented WGC Model class in your WGCSUL implementation.
 
 We assume the same input and outputs as used in the lecture. So the inputs are one of the set \{"cabbage?", "goat?", "nothing?", "wolf?"\} and each input should return a response that is contained in the set \{"eaten!", "finished!", "init!", "ok!", "retry!"\}. Note that the "ok!" output is new, i.e. we did not see this output in the IOCO lab.
 
@@ -134,6 +136,14 @@ Since \texttt{SULCache}'s constructor method is deprecated, we recommend that yo
 Think about whether you should wrap the \texttt{SUL} directly or whether you should wrap the \texttt{SymbolCounterSUL}. Hint: the \texttt{SymbolCounterSUL} counts every call of the \texttt{step()} method before it passes on the call to the \texttt{SUL} it wraps. If you cannot determine the correct order, you can always experiment to find out :)
 
 See if, after wrapping the \texttt{SUL} in a cache, you can notice a significant change in the number of executed steps.
+
+\section*{Part 3. Learning Experiment}
+For this part of the assignment you will experiment with different learning algorithms and hypothesis testing methods. To save you from the bulk of the work of setting this experiment up with Learnlib, the experiments setup is given, based on a slightly modified version borrowed from RU Nijmegen\footnote{\url{https://gitlab.science.ru.nl/ramonjanssen/basic-learning}}. 
+
+Download the code for this experiment setup from the GitHub repository. In order to run this experiment, you will also require an updated version of the learnlib jar. Look for the Learnlib-with-ETF-Updted.jar file in the lib folder, and include this (instead of the old jar) in your project. You should now be able to run the experiment using the Experiment\_Main class.
+
+In this setup, the experiment is given the learning algorithm and hypothesis testing method as parameters. These enum parameters can easily be changed between runs of the experiments. In this assignment it is your task to fiddle around with these to find the optimal combination. Perform this task for both the ExperimentSUL included in the experiment and your own WGCSSUL. 
+
 \end{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

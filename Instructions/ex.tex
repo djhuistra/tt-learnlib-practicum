@@ -61,7 +61,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Learnlib Practicum}
+\title{Automata learning with Learnlib}
 
 \author{David Huistra \and Jeroen Meijer}
 
@@ -85,48 +85,59 @@
 %\thispagestyle{empty}
 % \vspace{1.5\baselineskip}
 
-\begin{abstract}
+\section*{Introduction}
+% \begin{abstract}
 %\textbf{Important: login to the lab computers using course code 217001.}
-The goal of this assignment is to practice with the LearnLib framework for automata learning algorithms.
-You can do this assignment with the same partner as the previous assignment.
+The goal of this assignment is to get some hands on experience with automata learning. First you will learn a model of your own implementation, to show it is relatively easy to use Learlib for automata learning. After that you will experiment with the learning process to see how the performance of the process can be increased, for example by using different learning algorithms or a caching mechanism. Finally we will show how the learned model of an implementation can be used to test the implementation by using LTSMin for model checking.
 
 % Note that this assignment requires you to upload a mutant implementation of WGCF
 % before the lab class on \deadline.
-\end{abstract}
+% \end{abstract}
 
 \section*{Preliminaries: Installing stuff.}
-
-\paragraph{Optional: Install Eclipse}
-For this assignment we recommend the use of Eclipse. You are however free to compile the code by command lines :)
 
 \paragraph{Optional: Install GraphViz}
 The Learnlib provides the option to export the learned models to the GraphDOT format so that they can visualized by the GraphViz application. If you want to visualize the learned models (reccomended), you need to install GraphViz. This can be done from here: \url{http://www.graphviz.org/Download..php}. If you do not install GraphViz, you will see the models in the (textual) GraphDot format.
 
 \emph{Sidenote: For Windows users, please be aware that you will need to add GraphViz to your PATH variable (as explained on the download page, but easily looked over).}
 
+\paragraph{Optional: Install Eclipse}
+For this assignment you will need to include one or two jar libraries into your code. We therefore recommend that you use a java IDE. Specifically we will provide support for Eclipse throughout this document, but you are free to use another IDE such as InteliJ or use a text editor and command line.
+
+
+
 \section*{Part 1. Learning a model of your Wolf-Goat-Cabbage implementation}
 
-\textbf{The assingment}. We will start off this assignment by automatically learning a model of your Wolf-Goat-Cabbage implementation. We will provide you with some basic Learnlib settings for this task. The only task you will need to perform is to write a wrapper for your implementation so that Learnlib will know how to interact with it.  This will be done by implementing Learnlib's SUL interface.
+\textbf{The assignment}. We will start off this assignment by automatically learning a model of your Wolf-Goat-Cabbage implementation. We will provide you with some basic Learnlib settings for this task. The only task you will need to perform is to write a wrapper for your implementation so that Learnlib will know how to interact with it.  This will be done by implementing Learnlib's SUL interface.
 
-\textbf{Getting to work}. Download the provided basic framework from GitHub\footnote{\url{https://github.com/djhuistra/tt-learnlib-practicum}}. You can import this project into eclipse. Next to the basic framework for using Learnlib (the learner class and the (empty) SUL wrapper class), this also includes a .jar file with the entire Learnlib project. (Including a jar file in eclipse: right click project name  -\textgreater properties  -\textgreater Java Build Path -\textgreater Add External JARs -\textgreater Select learnlib.jar). Make sure that you can successfully run the learner. It should return a model with only one state, as the wrapper has not yet been implemented.
+\textbf{Download the Learnlib setup}. Download the provided basic framework from GitHub\footnote{\url{https://github.com/djhuistra/tt-learnlib-practicum}} as a Zip file and extract it on your file system (or clone with git). In addition to a basic Learnlib setup (the learner class and the (empty) SUL wrapper class), this also includes a .jar library with the entire Learnlib project.
+
+\textbf{Eclipse instructions} Setting up the project in Eclipse. In eclipse, create a new Java project and select the folder of the extracted Learlib framework as the root of the project. Otherwise you can create a new Java project and import the files. Next you will have to include the jar file as a project library: right click project name  -\textgreater properties  -\textgreater Java Build Path -\textgreater Add External JARs -\textgreater Select the Learnlib jar in the lib folder.
+
+\medskip
+At this point: Make sure that you can successfully run the learner. It should return a model with only one state, as the wrapper has not yet been implemented.
 
 \emph{Sidenote. In the learner class indicate if you have installed graphDOT, so it will produce a graphical model.}
 
-\textbf{Next up}. Include your Wolf-Goat-Cabbage implementation into the project (Including a jar file in eclipse: right click project name-\textgreater properties  -\textgreater Java Build Path  -\textgreater  Add External JARs  -\textgreater  Select implementation jar). Note that in this lab we will not be using the binary encoding of inputs and outputs. 
-
-Now you may start with implementing the SUL wrapper. We advice you to use the WGC implementation as a library jar, not as a runnable jar. So you can import ans use the implemented WGC Model class in your WGCSUL implementation.
+\medskip
+\textbf{Getting to work}. Now you may start with implementing the SUL wrapper for your WGC implementation. While it is possible to learn a complete black-box implementation, we advice you to use a glass-box implementation and use. For this, we advice you to use your WGC implementation as a library jar, not as a runnable jar. In this way can import and use the implemented WGC Model class in your WGCSUL implementation. The empty WGCSUL class also provides some suggestions. Note that in this lab we will not be using the binary encoding of inputs and outputs. 
 
 We assume the same input and outputs as used in the lecture. So the inputs are one of the set \{"cabbage?", "goat?", "nothing?", "wolf?"\} and each input should return a response that is contained in the set \{"eaten!", "finished!", "init!", "ok!", "retry!"\}. Note that the "ok!" output is new, i.e. we did not see this output in the IOCO lab.
 
+\medskip
+\textbf{Eclipse instructions} Include your Wolf-Goat-Cabbage implementation into the project (Including a jar file in eclipse: right click project name-\textgreater properties  -\textgreater Java Build Path  -\textgreater  Add External JARs  -\textgreater  Select implementation jar).
+
+
+
 \section*{Part 2. \texttt{SUL} Wrapping}
-
-
 While it is pretty cool to be able to learn a model by interacting with an implementation, the success of this method depends in practice also on its performance. Is it still feasible to learn the model of a larger implementation in a reasonable amount of time? Increasing the performance of this method is currently an active area of research.
 
 In this part we want you to get some insight into one of the bottlenecks of the process: interaction with the SUL. Each interaction with the SUL is considered expensive, and therefore if possible we want to limit the amount of interaction.
  
+\medskip
 First we want to gain some insight into the interaction taking place in the learning process. Therefore we want to wrap our \texttt{SUL} in a \texttt{SymbolCounterSUL}\footnote{\url{https://github.com/LearnLib/learnlib/blob/develop/core/src/main/java/de/learnlib/oracles/SymbolCounterSUL.java}} that counts the number of total steps taken during the learning process, and then pass this \texttt{SymbolCounterSUL} to the membershipOracle. After the experiment, obtain the data using the \texttt{getStatisticalData()} method. Observe the output.
 
+\medskip
 Now we want to see if we can improve this. Learnlib offers a caching mechanism for SULs that might just help. Read the documentation to see what the cache wrapper\footnote{\url{https://github.com/LearnLib/learnlib/blob/develop/filters/cache/src/main/java/de/learnlib/cache/sul/SULCache.java}} does:
 
 
@@ -140,7 +151,7 @@ See if, after wrapping the \texttt{SUL} in a cache, you can notice a significant
 \section*{Part 3. Learning Experiment}
 For this part of the assignment you will experiment with different learning algorithms and hypothesis testing methods. To save you from the bulk of the work of setting this experiment up with Learnlib, the experiments setup is given, based on a slightly modified version borrowed from RU Nijmegen\footnote{\url{https://gitlab.science.ru.nl/ramonjanssen/basic-learning}}. 
 
-Download the code for this experiment setup from the GitHub repository. In order to run this experiment, you will also require an updated version of the learnlib jar. Look for the Learnlib-with-ETF-Updted.jar file in the lib folder, and include this (instead of the old jar) in your project. You should now be able to run the experiment using the Experiment\_Main class.
+This code can be found in the part3 folder of the github repo. You should directly be able to run the experiment using the Experiment\_Main class.
 
 In this setup, the experiment is given the learning algorithm and hypothesis testing method as parameters. These enum parameters can easily be changed between runs of the experiments. In this assignment it is your task to fiddle around with these to find the optimal combination. Perform this task for both the ExperimentSUL included in the experiment and your own WGCFSUL. 
 
